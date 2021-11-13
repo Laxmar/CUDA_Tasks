@@ -2,9 +2,11 @@
 #include "device_launch_parameters.h"
 
 #include <stdio.h>
-#include <iostream>
+#include "utility.h"
+
 
 cudaError_t bubble_sort(float* array, unsigned int size);
+
 
 __global__ void bubble_sort_kernel(float* dev_array, unsigned int s, unsigned int size)
 {
@@ -30,7 +32,10 @@ __global__ void bubble_sort_kernel(float* dev_array, unsigned int s, unsigned in
 int main()
 {
     const int array_size = 6;
-    float a[array_size] = { 1.1, 5, 3, 4, 2.5, 0};
+    float a[array_size] = {};
+
+    generate_array(a, array_size, -10, 10);
+    //print_array(a, array_size);
 
     cudaError_t cudaStatus = bubble_sort(a, array_size);
 
@@ -39,12 +44,7 @@ int main()
         fprintf(stderr, "bubble_sort failed!");
         return 1;
     }
-
-    for (int i = 0; i < array_size; i++)
-    {
-        std::cout << a[i] << " | ";
-    }
-    std::cout << "\n";
+    print_array(a, array_size);
 
     // cudaDeviceReset must be called before exiting in order for profiling and
     // tracing tools such as Nsight and Visual Profiler to show complete traces.
@@ -58,6 +58,7 @@ int main()
 
     return 0;
 }
+
 
 cudaError_t bubble_sort(float* array, unsigned int array_size)
 {

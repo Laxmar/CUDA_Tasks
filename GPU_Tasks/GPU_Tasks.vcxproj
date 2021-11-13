@@ -80,6 +80,12 @@
     <CudaCompile Include="bubble_sort.cu" />
     <CudaCompile Include="addition.cu" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="utility.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.5.targets" />
