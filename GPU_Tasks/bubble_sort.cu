@@ -34,7 +34,7 @@ __global__ void bubble_sort_kernel(float* dev_array, unsigned int s, unsigned in
 
 int main()
 {
-    const int array_size = 262144;
+    const unsigned int array_size = 65536; // 262144;
     float a[array_size] = {};
 
     generate_array(a, array_size, -1000, 1000);
