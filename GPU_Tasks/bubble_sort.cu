@@ -34,10 +34,10 @@ __global__ void bubble_sort_kernel(float* dev_array, unsigned int s, unsigned in
 
 int main()
 {
-    const unsigned int array_size = 65536; // 262144;
-    float a[array_size] = {};
+    const unsigned int array_size = 65536; // 65536; // 262144;
+    float* a = new float[array_size];
 
-    generate_array(a, array_size, -1000, 1000);
+    generate_array(a, array_size); //, -1000, 1000);
     //print_array(a, array_size);
 
     cudaError_t cudaStatus = bubble_sort(a, array_size);
@@ -56,6 +56,7 @@ int main()
     if (cudaStatus != cudaSuccess)
     {
         fprintf(stderr, "cudaDeviceReset failed!");
+        delete a;
         return 1;
     }
 
@@ -68,6 +69,7 @@ int main()
         printf("\n\nERROR: Array is not sorted!\n");
     }
 
+    delete a;
     return 0;
 }
 
@@ -112,7 +114,6 @@ cudaError_t bubble_sort(float* array, unsigned int array_size)
     for (unsigned int i = 0; i < array_size - 1; i++) 
     { 
         bubble_sort_kernel<<<blocks, threads_number>>> (dev_array, (i % 2), array_size);
-       // kernel << <blocks, threads >> >
     }
     cudaEventRecord(stop, 0); // TODO check status 
     cudaEventSynchronize(stop); // TODO check status 

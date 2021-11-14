@@ -10,7 +10,9 @@ GPU used: NVIDIA GeForce RTX 2060
 
 Bubble sort results:
 array_size	|	Time[ms]
-1024		|	6
-4096		|	24
-16384		|	103
+1024		|	4
+4096		|	16
+16384		|	65
 65536		|	435	
+262144		|	1269
+1048576		|	28188
