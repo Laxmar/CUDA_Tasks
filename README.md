@@ -4,3 +4,13 @@ Requirements:
 
 Run:
  - using VS
+
+
+GPU used: NVIDIA GeForce RTX 2060
+
+Bubble sort results:
+array_size	|	Time[ms]
+1024		|	6
+4096		|	24
+16384		|	103
+65536		|	435	

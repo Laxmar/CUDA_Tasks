@@ -1,6 +1,6 @@
 #include "utility.h"
 
-void print_array(float* array, const unsigned int top_k)
+void print_array(const float* array, const unsigned int top_k)
 {
     // print top k elements from float array
     for (int i = 0; i < top_k; i++)
@@ -21,4 +21,14 @@ void generate_array(float* array, const unsigned int array_size, const float flo
     {
         array[i] = distr(eng);
     }
+}
+
+bool is_array_sorted(const float* array, const unsigned int array_size)
+{
+    for (int i = 0; i < array_size-1; ++i)
+    {
+        if (array[i] > array[i + 1])
+            return false;
+    }
+    return true;
 }

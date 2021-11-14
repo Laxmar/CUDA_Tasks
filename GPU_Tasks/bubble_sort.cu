@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include "utility.h"
-
+#include <cmath>
 
 cudaError_t bubble_sort(float* array, unsigned int size);
 
@@ -14,6 +14,9 @@ __global__ void bubble_sort_kernel(float* dev_array, unsigned int s, unsigned in
     int i, j;
     float a, b;
     int index = 2 * (threadIdx.x + blockDim.x * blockIdx.x);
+   /* if (index + s == 0) {
+        printf("kernel 0 was run\n");
+    }*/
 
     i = index + s; 
     j = i + 1;
@@ -31,10 +34,10 @@ __global__ void bubble_sort_kernel(float* dev_array, unsigned int s, unsigned in
 
 int main()
 {
-    const int array_size = 6;
+    const int array_size = 262144;
     float a[array_size] = {};
 
-    generate_array(a, array_size, -10, 10);
+    generate_array(a, array_size, -1000, 1000);
     //print_array(a, array_size);
 
     cudaError_t cudaStatus = bubble_sort(a, array_size);
@@ -44,7 +47,8 @@ int main()
         fprintf(stderr, "bubble_sort failed!");
         return 1;
     }
-    print_array(a, array_size);
+    print_array(a, 10);
+    //print_array(a, array_size);
 
     // cudaDeviceReset must be called before exiting in order for profiling and
     // tracing tools such as Nsight and Visual Profiler to show complete traces.
@@ -54,7 +58,15 @@ int main()
         fprintf(stderr, "cudaDeviceReset failed!");
         return 1;
     }
-    printf("Program finished without errros");
+
+    if (is_array_sorted(a, array_size))
+    {
+        printf("\n\nProgram finished without errros and Array is sorted\n");
+    }
+    else
+    {
+        printf("\n\nERROR: Array is not sorted!\n");
+    }
 
     return 0;
 }
@@ -63,6 +75,12 @@ int main()
 cudaError_t bubble_sort(float* array, unsigned int array_size)
 {
     float* dev_array = 0;
+    int n = array_size / 2; // each thread use 2 numbers
+    int threads_number = 512; // number of threads within each block
+    int blocks = std::max(int(std::ceil(n / float(threads_number))), 1);
+
+    printf("array_size: %d n: %d threads_number per block: %d blocks: %d\n\n", array_size, n, threads_number, blocks);
+
     cudaError_t cudaStatus = cudaSetDevice(0);
     if (cudaStatus != cudaSuccess)
     {
@@ -84,13 +102,25 @@ cudaError_t bubble_sort(float* array, unsigned int array_size)
         fprintf(stderr, "cudaMemcpy failed!");
         goto Error;
     }
+    
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start); // TODO check status 
+    cudaEventCreate(&stop); // TODO check status 
+    cudaEventRecord(start, 0); // TODO check status 
 
     // launch Kernel
     for (unsigned int i = 0; i < array_size - 1; i++) 
     { 
-        bubble_sort_kernel<<<1, array_size>>> (dev_array, (i % 2), array_size);
+        bubble_sort_kernel<<<blocks, threads_number>>> (dev_array, (i % 2), array_size);
        // kernel << <blocks, threads >> >
     }
+    cudaEventRecord(stop, 0); // TODO check status 
+    cudaEventSynchronize(stop); // TODO check status 
+    float time;
+    cudaEventElapsedTime(&time, start, stop); // TODO check status 
+    std::cout << "time : " << time << "ms.\n";
+    cudaEventDestroy(start); // TODO check status 
+    cudaEventDestroy(stop); // TODO check status 
 
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "kernel launch failed: %s\n", cudaGetErrorString(cudaStatus));
@@ -118,3 +148,4 @@ Error:
 
     return cudaStatus;
 }
+
