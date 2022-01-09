@@ -8,7 +8,7 @@ Run:
 
 GPU used: NVIDIA GeForce RTX 2060
 
-Bubble sort results: <br/>
+GPU Bubble sort results: <br/>
 array_size	|	Time[ms] <br/>
 1024		|	4 <br/>
 4096		|	16 <br/>
@@ -16,3 +16,14 @@ array_size	|	Time[ms] <br/>
 65536		|	435	<br/>
 262144		|	1269 <br/>
 1048576		|	28188 <br/>
+
+
+CPU Bubble sort results:
+Bubble sort results: <br/>
+array_size	|	Time[ms] <br/>
+1024		|	0<br/>
+4096		|	14<br/>
+16384		|	323<br/>
+65536		|	5545<br/>
+262144		|	85726<br/>
+1048576		|	1355146<br/>

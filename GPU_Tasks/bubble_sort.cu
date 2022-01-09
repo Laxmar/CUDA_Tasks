@@ -56,7 +56,7 @@ int main()
     if (cudaStatus != cudaSuccess)
     {
         fprintf(stderr, "cudaDeviceReset failed!");
-        delete a;
+        delete[] a;
         return 1;
     }
 
@@ -69,7 +69,7 @@ int main()
         printf("\n\nERROR: Array is not sorted!\n");
     }
 
-    delete a;
+    delete[] a;
     return 0;
 }
 
